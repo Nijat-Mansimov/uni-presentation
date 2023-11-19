@@ -14,9 +14,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', async (req, res) => {
     try {
-        console.log(req.header('x-forwarded-for')) // result "::1"
-        console.log(req.connection.remoteAddress) // result "::1"
-        console.log(req.ip) // result "::1"
+        console.log({"IP addresses": req.header('x-forwarded-for')})
         res.render('home');
     } catch (error) {
         console.error('Error processing request:', error.message);
