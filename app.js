@@ -4,7 +4,6 @@ const cookieParser = require('cookie-parser');
 const ejs = require('ejs');
 const os = require('os');
 const axios = require('axios');
-const DeviceDetector = require('device-detector-js');
 
 const URL = 'https://ipgeolocation.abstractapi.com/v1/?api_key=f6ecf16cec1f4f188b5c2ccdad683f7e';
 
@@ -41,20 +40,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use((req, res, next) => {
-    const userAgent = req.headers['user-agent'];
-    const detector = new DeviceDetector();
-    const result = detector.parse(userAgent);
-
-    if (result.device) {
-        req.deviceName = result.device.model;
-    } else {
-        req.deviceName = 'Unknown Device';
-    }
-
-    next();
-});
-
 app.get('/', async (req, res) => {
     try {
         const publicIPAddress = await axios.get('https://api64.ipify.org?format=json')
@@ -62,7 +47,7 @@ app.get('/', async (req, res) => {
         const privateIPAddress = getPrivateIP();
         const ipAddressInformation = await sendAPIRequest(publicIPAddress);
 
-        console.log({ PublicIP: publicIPAddress, PrivateIP: privateIPAddress, Device: req.deviceName });
+        console.log({ PublicIP: publicIPAddress, PrivateIP: privateIPAddress, Device: os.hostname() });
         res.render('home');
     } catch (error) {
         console.error('Error processing request:', error.message);
