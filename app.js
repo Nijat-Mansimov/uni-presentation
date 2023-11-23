@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
-
+const platform = require("platform");
+const UAParser = require('ua-parser-js'); // Import ua-parser-js
 
 const app = express();
 
@@ -15,6 +16,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', async (req, res) => {
     try {
         console.log({"IP addresses": req.header('x-forwarded-for')})
+        const userAgent = req.headers['user-agent'];
+        let parser = new UAParser(userAgent);
+        let parserResults = parser.getDevice();
+        console.log(parserResults);
         res.render('home');
     } catch (error) {
         console.error('Error processing request:', error.message);
