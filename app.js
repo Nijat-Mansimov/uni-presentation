@@ -15,11 +15,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', async (req, res) => {
     try {
-        console.log({"IP addresses": req.header('x-forwarded-for')})
         const userAgent = req.headers['user-agent'];
         let parser = new UAParser(userAgent);
         let parserResults = parser.getDevice();
-        console.log(parserResults);
+        console.log({"IP addresses": req.header('x-forwarded-for'), "Device": parserResults})
         res.render('home');
     } catch (error) {
         console.error('Error processing request:', error.message);
